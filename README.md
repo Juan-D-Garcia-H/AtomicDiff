@@ -411,15 +411,15 @@ Error at orders 6–7 is $\varepsilon/2 \approx 1.11 \times 10^{-16}$ — consis
 
 ### 6. Measured Throughput (1,000,000 iterations, `-O3 -march=native`)
 
-Real timings from `test_exhaustivo.cpp`:
+Real timings from `test_exhaustivo.cpp` with variable inputs (no compiler constant-folding):
 
 | Expression | Variables | Order | Time/iter |
 |:-----------|----------:|------:|----------:|
-| `sin(x)·exp(x)` + 1st deriv | 1 | 4 | 17.7 ns |
-| `sin(x)·exp(y) + √(x²+y²)` + gradient | 2 | 4 | 1.3 ns |
-| `exp(sinh(x²))` + 10th deriv | 1 | 20 | 587 ns |
+| `sin(x)·exp(x)` + 1st deriv | 1 | 4 | 19.7 ns |
+| `sin(x)·exp(y) + √(x²+y²)` + gradient | 2 | 4 | 105 ns |
+| `exp(sinh(x²))` + 10th deriv | 1 | 20 | 648 ns |
 
-The order-20 case (587 ns/iter) is the most representative for high-order workloads. The 2-variable case benefits from compiler loop fusion at `-O3`.
+The 2-variable case (105 ns) computes two full independent lanes plus gradient extraction in a single forward pass. The order-20 case (648 ns) is the most representative for high-order workloads.
 
 ---
 
@@ -463,13 +463,15 @@ All `sizeof` values match the formula exactly — zero padding, zero overhead.
 
 | Metric | Result |
 |--------|--------|
+| Tests passed | ✅ 75/75 |
 | Max order tested | 20 |
 | Max error (ULPs) | ≤2 |
-| `sin(x)·exp(x)` throughput (N=4) | 17.7 ns/eval |
-| `exp(sinh(x²))` order-20 throughput | 587 ns/eval |
-| Memory overhead | 0 (exact formula) |
+| `sin(x)·exp(x)` throughput (N=4, 1 var) | 19.7 ns/eval |
+| `sin(x)·exp(y)+√(x²+y²)` gradient (N=4, 2 vars) | 105 ns/eval |
+| `exp(sinh(x²))` order-20 throughput | 648 ns/eval |
+| Memory overhead | 0 (exact `sizeof` verified) |
 | Polynomial error | Exact (0.0) |
-| Identity verification | ✅ 55/55 tests passed |
+| Singularities | No crash: `log(0)`→−∞, `sqrt(-1)`→NaN, `tan(π/2)`→1.6e16 |
 
 ---
 
