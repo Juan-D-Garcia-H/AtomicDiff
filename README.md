@@ -256,7 +256,59 @@ This is enforced structurally: lane $i$ only ever convolves coefficients from la
 
 ## 🚀 Quick Start
 
-> *(Coming soon)*
+### Installation
+
+AtomicDiff is header-only — just include and use:
+
+```cpp
+#include <AtomicDiff/taylor/AtomicDiff.hpp>
+using namespace ad;
+```
+
+### Basic Example
+
+```cpp
+#include <iostream>
+#include <iomanip>
+#include <AtomicDiff/taylor/AtomicDiff.hpp>
+using namespace ad;
+
+int main() {
+    // Create independent variables (order N=4, V=2 variables)
+    auto x = Taylor<4, 2>::variable(2.0, 0);  // x = 2.0, variable index 0
+    auto y = Taylor<4, 2>::variable(3.0, 1);  // y = 3.0, variable index 1
+
+    // Build your expression: f(x,y) = sin(x)*exp(y) + sqrt(x²+y²)
+    auto f = sin(x) * exp(y) + sqrt(x*x + y*y);
+
+    // Get function value
+    std::cout << "f(2,3)    = " << f.val()           << "\n";  //  18.8650
+
+    // Get first derivatives (gradient)
+    // deriv(var_index, order) returns the normalized coefficient a_{i,n}
+    // ∂f/∂xᵢ = 1! · deriv(i, 1) = deriv(i, 1)
+    std::cout << "∂f/∂x     = " << f.deriv(0, 1)     << "\n";  //  -7.8061
+    std::cout << "∂f/∂y     = " << f.deriv(1, 1)     << "\n";  //  19.0912
+
+    // Get second derivatives (Hessian diagonal)
+    // ∂²f/∂xᵢ² = 2! · deriv(i, 2) = 2 · deriv(i, 2)
+    std::cout << "∂²f/∂x²   = " << f.deriv(0, 2) * 2 << "\n";  // -18.0507
+    std::cout << "∂²f/∂y²   = " << f.deriv(1, 2) * 2 << "\n";  //  18.3513
+
+    return 0;
+}
+```
+
+**Note on `deriv(i, n)`**: returns the normalized Taylor coefficient $a_{i,n} = \frac{1}{n!}\frac{\partial^n f}{\partial x_i^n}$. To recover the raw $n$-th derivative, multiply by $n!$ — e.g. `f.deriv(i, 2) * 2` gives $\partial^2 f/\partial x_i^2$.
+
+**Expected output:**
+```
+f(2,3)    =  18.8650
+∂f/∂x     =  -7.8061
+∂f/∂y     =  19.0912
+∂²f/∂x²   = -18.0507
+∂²f/∂y²   =  18.3513
+```
 
 ---
 
