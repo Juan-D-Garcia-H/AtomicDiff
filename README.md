@@ -149,11 +149,17 @@ $$\boxed{t_0 = \tan u_0, \qquad t_n = \frac{1}{n} \sum_{k=1}^{n} k \cdot u_k \cd
 
 where $(1 + t^2)_{m}$ denotes the $m$-th normalized Taylor coefficient of $1 + t^2$, computed via Section 3.2.
 
+> **Important**: The recurrence is well-defined because each $(1+t^2)_{n-k}$ with $k \geq 1$ only depends on $t_0, \ldots, t_{n-k}$, all already known at step $n$. There is no circular dependency.
+
+> **Derivation**: From $t' = (1 + t^2) \cdot u'$, apply the product rule for Taylor coefficients (Section 3.2) and solve for $t_n$.
+
 #### 4.5 Power Function
 
 For $y = u^p$ with $p \in \mathbb{R}$ and $u_0 \neq 0$:
 
-$$\boxed{y_0 = u_0^p, \qquad y_n = \frac{1}{n\, u_0} \sum_{k=1}^{n} \bigl(p(k+1) - n\bigr) \cdot u_k \cdot y_{n-k} \quad (n \geq 1)}$$
+$$\boxed{y_0 = u_0^p, \qquad y_n = \frac{1}{n\, u_0} \sum_{k=1}^{n} \bigl((p+1)k - n\bigr) \cdot u_k \cdot y_{n-k} \quad (n \geq 1)}$$
+
+> **Derivation**: From $u \cdot y' = p \cdot y \cdot u'$, apply the Leibniz rule for normalized coefficients to obtain $n\, u_0\, y_n = \sum_{k=1}^{n} \bigl[pk - (n-k)\bigr] u_k\, y_{n-k}$, which simplifies to the factor $((p+1)k - n)$.
 
 > **Alternative**: Compute via $y = e^{p \ln u}$ using the recurrences in Sections 4.1–4.2.
 
