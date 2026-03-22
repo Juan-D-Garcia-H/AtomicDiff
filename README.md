@@ -1,30 +1,17 @@
-<a href="https://github.com/tuusuario/atomicdiff" target="_blank">
-    <img src="art/atomicdiff-header.svg" width="100%">
-</a>
-
-<br>
-
 <div align="center">
-
-![Linux build status](https://github.com/tuusuario/atomicdiff/workflows/linux/badge.svg?branch=main)
-![macOS build status](https://github.com/tuusuario/atomicdiff/workflows/osx/badge.svg?branch=main)
-![Windows build status](https://github.com/tuusuario/atomicdiff/workflows/windows/badge.svg?branch=main)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![C++20](https://img.shields.io/badge/C%2B%2B-20-blue.svg)](https://isocpp.org/)
-[![Header-only](https://img.shields.io/badge/Header--only-brightgreen.svg)](https://github.com/tuusuario/atomicdiff)
-[![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey)](https://github.com/tuusuario/atomicdiff)
-[![Code Size](https://img.shields.io/github/languages/code-size/tuusuario/atomicdiff)](https://github.com/tuusuario/atomicdiff)
-[![Stars](https://img.shields.io/github/stars/tuusuario/atomicdiff)](https://github.com/tuusuario/atomicdiff)
-
-</div>
-
----
 
 # ⚛️ AtomicDiff
 
 **High-Order Automatic Differentiation with Taylor Lanes & Lock-Free Atomic Accumulation**
 
-AtomicDiff is a modern C++20 header-only library that implements high-order automatic differentiation (AD) using independent Taylor lanes. Unlike traditional AD libraries that compute unnecessary mixed derivatives ($\mathcal{O}(V^2)$ complexity), AtomicDiff maintains each variable's derivatives in separate, independent lanes, achieving $\mathcal{O}(V \cdot N)$ complexity where $V$ is the number of variables and $N$ is the derivative order.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![C++20](https://img.shields.io/badge/C%2B%2B-20-blue.svg)](https://isocpp.org/)
+[![Header-only](https://img.shields.io/badge/Header--only-brightgreen.svg)](https://github.com/tuusuario/atomicdiff)
+[![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey)](https://github.com/tuusuario/atomicdiff)
+
+*AtomicDiff is a modern C++20 header-only library that implements high-order automatic differentiation (AD) using independent Taylor lanes. Unlike traditional AD libraries that compute unnecessary mixed derivatives ($\mathcal{O}(V^2)$ complexity), AtomicDiff maintains each variable's derivatives in separate, independent lanes, achieving $\mathcal{O}(V \cdot N)$ complexity where $V$ is the number of variables and $N$ is the derivative order.*
+
+</div>
 
 ---
 
