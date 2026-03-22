@@ -53,3 +53,13 @@ In problems with independent variables (hyperparameter optimization, univariate 
 
 ```math
 \mathcal{L}_i^N[f] = \left( f, \frac{\partial f}{\partial x_i}, \frac{1}{2!}\frac{\partial^2 f}{\partial x_i^2}, \ldots, \frac{1}{N!}\frac{\partial^N f}{\partial x_i^N} \right)
+
+
+## 📐 Mathematical Foundations
+
+### 1. Normalized Taylor Coefficients
+
+Let $f: \mathbb{R}^V \rightarrow \mathbb{R}$ be an analytic function. For each independent variable $x_i$, we define the **normalized Taylor coefficients**:
+
+```math
+\boxed{a_{i,n} = \frac{1}{n!} \frac{\partial^n f}{\partial x_i^n}(x_0)}
