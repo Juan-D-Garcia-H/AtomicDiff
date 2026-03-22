@@ -314,7 +314,7 @@ f(2,3)    =  21.8693
 
 ## 📊 Benchmark Results
 
-> All benchmarks run on a single machine. Parallel scaling uses `std::atomic_ref` lock-free accumulation.
+> Derivative values and correctness results are from real executions. Timing results (§6) are from `test_exhaustivo.cpp` running 1,000,000 iterations with `-O3 -march=native`. Parallel scaling (§7) is illustrative — see note.
 
 ### 1. High-Order Derivatives — Single Variable
 
@@ -372,67 +372,27 @@ All three lanes computed in a single forward pass with no mixed derivatives.
 | 2 | 272.000000 | 272.000000 | 0.0 |
 | 3 | 258.000000 | 258.000000 | 0.0 |
 | 4 | 120.000000 | 120.000000 | 0.0 |
+| 5 | 0.000000 | 0.000000 | 0.0 |
 
 Polynomial derivatives are exact — Taylor arithmetic on polynomials terminates with zero truncation error.
 
 ---
 
-### 4. Trigonometric Identities
-
-`sin²(x) + cos²(x) = 1` at `x = 1.5`
+### 4. Trigonometric & Hyperbolic Identities
 
 ```
-sin²(x) + cos²(x) = 1.000000000000000   (error = 0.0)
-∂/∂x              = 0.000000000000000   (should be 0)
-∂²/∂x²            = 0.000000000000000   (should be 0)
+sin²(x) + cos²(x)   = 1.000000000000000   (error = 0.0,    ∂/∂x = 0.0)
+cosh²(x) − sinh²(x) = 1.000000000000000   (error = 2.2e−16, within ε_machine)
+exp(ln(x))           = x                   (error = 0.0,    ∂/∂x = 1.0)
 ```
+
+All identities verified at the level of IEEE 754 double precision.
 
 ---
 
-### 5. Exponential / Logarithmic Identities
+### 5. Analytical Validation — `sin(x)` at `x = 1.0`
 
-`exp(ln(x)) = x` at `x = 3.14159`
-
-```
-exp(ln(x)) = 3.1415900000   (error = 0.0)
-∂/∂x       = 1.0000000000   (should be 1)
-```
-
----
-
-### 6. Parallel Scaling
-
-`f(x) = sin(x)·cos(x)·exp(x)·√x` — 10,000,000 independent evaluations
-
-| Threads | Time (ms) | Speedup | Derivatives/s |
-|--------:|----------:|--------:|--------------:|
-| 1 | 114.0 | 1.00× | 3.51×10⁸ |
-| 2 | 57.5 | 1.98× | 6.96×10⁸ |
-| 4 | 29.2 | 3.90× | 1.37×10⁹ |
-| **8** | **19.7** | **5.79×** | **2.03×10⁹** |
-| 16 | 24.8 | 4.60× | 1.61×10⁹ |
-
-Peak throughput at 8 threads (5.79×). Beyond that, scheduler overhead outweighs the gain — expected behavior for lock-free atomic workloads on this hardware.
-
----
-
-### 7. Memory Usage — Order N = 4
-
-Layout: $8 \times (1 + V \cdot N)$ bytes (contiguous `double` array)
-
-| Variables | Elements | Memory (KB) |
-|----------:|--------:|------------:|
-| 1 | 5 | 0.04 |
-| 16 | 65 | 0.51 |
-| 64 | 257 | 2.01 |
-| 256 | 1,025 | 8.01 |
-| 1,024 | 4,097 | 32.01 |
-
----
-
-### 8. Analytical Validation
-
-`f(x) = sin(x)` at `x = 1.0` — derivatives cycle as $\sin, \cos, -\sin, -\cos, \ldots$
+Derivatives cycle as $\sin, \cos, -\sin, -\cos, \ldots$
 
 | Order | AtomicDiff | Analytical | Difference |
 |------:|-----------:|-----------:|-----------:|
@@ -445,20 +405,71 @@ Layout: $8 \times (1 + V \cdot N)$ bytes (contiguous `double` array)
 | 6 | −8.41e−01 | −8.41e−01 | 1.11e−16 |
 | 7 | −5.40e−01 | −5.40e−01 | 1.11e−16 |
 
-Error at orders 6–7 is exactly $\varepsilon_{\text{machine}} \approx 2.22 \times 10^{-16}$ — consistent with the theoretical bound from §8 of the mathematical foundations.
+Error at orders 6–7 is $\varepsilon/2 \approx 1.11 \times 10^{-16}$ — consistent with the theoretical bound from §8 of the mathematical foundations.
+
+---
+
+### 6. Measured Throughput (1,000,000 iterations, `-O3 -march=native`)
+
+Real timings from `test_exhaustivo.cpp`:
+
+| Expression | Variables | Order | Time/iter |
+|:-----------|----------:|------:|----------:|
+| `sin(x)·exp(x)` + 1st deriv | 1 | 4 | 17.7 ns |
+| `sin(x)·exp(y) + √(x²+y²)` + gradient | 2 | 4 | 1.3 ns |
+| `exp(sinh(x²))` + 10th deriv | 1 | 20 | 587 ns |
+
+The order-20 case (587 ns/iter) is the most representative for high-order workloads. The 2-variable case benefits from compiler loop fusion at `-O3`.
+
+---
+
+### 7. Parallel Scaling
+
+> ⚠️ **Simulated data** — these values are illustrative estimates, not measurements on real hardware. Real benchmarks will be added in a future release.
+
+`f(x) = sin(x)·cos(x)·exp(x)·√x` — 10,000,000 independent evaluations (simulated)
+
+| Threads | Time (ms) | Speedup | Derivatives/s |
+|--------:|----------:|--------:|--------------:|
+| 1 | 114.0 | 1.00× | 3.51×10⁸ |
+| 2 | 57.5 | 1.98× | 6.96×10⁸ |
+| 4 | 29.2 | 3.90× | 1.37×10⁹ |
+| **8** | **19.7** | **5.79×** | **2.03×10⁹** |
+| 16 | 24.8 | 4.60× | 1.61×10⁹ |
+
+The curve illustrates the expected scaling shape: near-linear speedup up to 8 threads, then regression at 16 due to scheduler overhead — typical for lock-free atomic workloads.
+
+---
+
+### 8. Memory Layout — Verified with `sizeof`
+
+Layout: $8 \times (1 + V \cdot N)$ bytes (contiguous `double` array, verified with `sizeof`)
+
+| Type | Elements | `sizeof` (bytes) | Memory |
+|:-----|--------:|-----------------:|-------:|
+| `Taylor<1,1>` | 2 | 16 | 16 B |
+| `Taylor<4,1>` | 5 | 40 | 40 B |
+| `Taylor<4,16>` | 65 | 520 | 0.51 KB |
+| `Taylor<4,64>` | 257 | 2,056 | 2.01 KB |
+| `Taylor<4,256>` | 1,025 | 8,200 | 8.01 KB |
+| `Taylor<20,1>` | 21 | 168 | 168 B |
+| `Taylor<20,1024>` | 20,481 | 163,848 | 160 KB |
+
+All `sizeof` values match the formula exactly — zero padding, zero overhead.
 
 ---
 
 ### Summary
 
-| | Result |
-|--|--------|
+| Metric | Result |
+|--------|--------|
 | Max order tested | 20 |
 | Max error (ULPs) | ≤2 |
-| Peak throughput | 2.03×10⁹ derivatives/s (8 threads) |
-| Memory (1024 vars, N=4) | 32 KB |
+| `sin(x)·exp(x)` throughput (N=4) | 17.7 ns/eval |
+| `exp(sinh(x²))` order-20 throughput | 587 ns/eval |
+| Memory overhead | 0 (exact formula) |
 | Polynomial error | Exact (0.0) |
-| Identity verification | ✅ sin²+cos²=1, exp(ln(x))=x |
+| Identity verification | ✅ 55/55 tests passed |
 
 ---
 
