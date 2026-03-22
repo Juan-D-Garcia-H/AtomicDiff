@@ -282,18 +282,18 @@ int main() {
     auto f = sin(x) * exp(y) + sqrt(x*x + y*y);
 
     // Get function value
-    std::cout << "f(2,3)    = " << f.val()           << "\n";  //  18.8650
+    std::cout << "f(2,3)    = " << f.val()           << "\n";  //  21.8693
 
     // Get first derivatives (gradient)
     // deriv(var_index, order) returns the normalized coefficient a_{i,n}
     // ∂f/∂xᵢ = 1! · deriv(i, 1) = deriv(i, 1)
-    std::cout << "∂f/∂x     = " << f.deriv(0, 1)     << "\n";  //  -7.8061
-    std::cout << "∂f/∂y     = " << f.deriv(1, 1)     << "\n";  //  19.0912
+    std::cout << "∂f/∂x     = " << f.deriv(0, 1)     << "\n";  //  -7.80383
+    std::cout << "∂f/∂y     = " << f.deriv(1, 1)     << "\n";  //  19.0958
 
     // Get second derivatives (Hessian diagonal)
     // ∂²f/∂xᵢ² = 2! · deriv(i, 2) = 2 · deriv(i, 2)
-    std::cout << "∂²f/∂x²   = " << f.deriv(0, 2) * 2 << "\n";  // -18.0507
-    std::cout << "∂²f/∂y²   = " << f.deriv(1, 2) * 2 << "\n";  //  18.3513
+    std::cout << "∂²f/∂x²   = " << f.deriv(0, 2) * 2 << "\n";  // -18.0717
+    std::cout << "∂²f/∂y²   = " << f.deriv(1, 2) * 2 << "\n";  //  18.3491
 
     return 0;
 }
@@ -303,11 +303,11 @@ int main() {
 
 **Expected output:**
 ```
-f(2,3)    =  18.8650
-∂f/∂x     =  -7.8061
-∂f/∂y     =  19.0912
-∂²f/∂x²   = -18.0507
-∂²f/∂y²   =  18.3513
+f(2,3)    =  21.8693
+∂f/∂x     =  -7.80383
+∂f/∂y     =  19.0958
+∂²f/∂x²   = -18.0717
+∂²f/∂y²   =  18.3491
 ```
 
 ---
