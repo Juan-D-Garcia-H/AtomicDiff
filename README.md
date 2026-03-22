@@ -2,6 +2,10 @@
     <img src="art/atomicdiff-header.svg" width="100%">
 </a>
 
+<br>
+
+<div align="center">
+
 ![Linux build status](https://github.com/tuusuario/atomicdiff/workflows/linux/badge.svg?branch=main)
 ![macOS build status](https://github.com/tuusuario/atomicdiff/workflows/osx/badge.svg?branch=main)
 ![Windows build status](https://github.com/tuusuario/atomicdiff/workflows/windows/badge.svg?branch=main)
@@ -12,7 +16,11 @@
 [![Code Size](https://img.shields.io/github/languages/code-size/tuusuario/atomicdiff)](https://github.com/tuusuario/atomicdiff)
 [![Stars](https://img.shields.io/github/stars/tuusuario/atomicdiff)](https://github.com/tuusuario/atomicdiff)
 
-# AtomicDiff
+</div>
+
+---
+
+# ⚛️ AtomicDiff
 
 **High-Order Automatic Differentiation with Taylor Lanes & Lock-Free Atomic Accumulation**
 
