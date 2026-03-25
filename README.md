@@ -549,35 +549,13 @@ auto   H    = hess.matrix(point);         // full V×V matrix
 ### Basic Example
 
 ```cpp
-#include <iostream>
-#include <iomanip>
-#include <AtomicDiff/derivatives.hpp>
-using namespace ad;
+// Manual creation
+auto x = Taylor<4,2>::variable(2.0, 0);
+auto y = Taylor<4,2>::variable(3.0, 1);
 
-int main() {
-    // Create independent variables (order N=4, V=2 variables)
-    auto x = Taylor<4, 2>::variable(2.0, 0);  // x = 2.0, variable index 0
-    auto y = Taylor<4, 2>::variable(3.0, 1);  // y = 3.0, variable index 1
-
-    // Build your expression: f(x,y) = sin(x)*exp(y) + sqrt(x²+y²)
-    auto f = sin(x) * exp(y) + sqrt(x*x + y*y);
-
-    // Get function value
-    std::cout << "f(2,3)    = " << f.val()           << "\n";  //  21.8693
-
-    // Get first derivatives (gradient)
-    // deriv(var_index, order) returns the normalized coefficient a_{i,n}
-    // ∂f/∂xᵢ = 1! · deriv(i, 1) = deriv(i, 1)
-    std::cout << "∂f/∂x     = " << f.deriv(0, 1)     << "\n";  //  -7.80383
-    std::cout << "∂f/∂y     = " << f.deriv(1, 1)     << "\n";  //  19.0958
-
-    // Get second derivatives (Hessian diagonal)
-    // ∂²f/∂xᵢ² = 2! · deriv(i, 2) = 2 · deriv(i, 2)
-    std::cout << "∂²f/∂x²   = " << f.deriv(0, 2) * 2 << "\n";  // -18.0717
-    std::cout << "∂²f/∂y²   = " << f.deriv(1, 2) * 2 << "\n";  //  18.3491
-
-    return 0;
-}
+// Helper (recommended) - structured bindings
+auto [a, b] = variables<4,2>(2.0, 3.0);
+auto [u, v, w] = variables<4,3>(1.0, 2.0, 3.0);
 ```
 ---
 
