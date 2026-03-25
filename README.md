@@ -547,6 +547,13 @@ auto   H    = hess.matrix(point);         // full V×V matrix
 ## 💻 Examples
 
 > *(Coming soon)*
+> // Manual creation
+auto x = Taylor<4,2>::variable(2.0, 0);
+auto y = Taylor<4,2>::variable(3.0, 1);
+
+// Helper (recommended) - structured bindings
+auto [a, b] = variables<4,2>(2.0, 3.0);
+auto [u, v, w] = variables<4,3>(1.0, 2.0, 3.0);
 
 ---
 
