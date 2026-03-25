@@ -555,7 +555,7 @@ auto   H    = hess.matrix(point);         // full V×V matrix
 AtomicDiff is header-only. Simply copy the headers into your project and include:
 
 ```cpp
-#include "atomicdiff/atomicdiff.hpp"
+#include <AtomicDiff/derivatives.hpp>
 ```
 
 **Requirements**: C++20-compliant compiler (GCC 10+, Clang 12+, MSVC 19.29+).
